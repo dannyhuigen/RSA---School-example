@@ -6,6 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
+import java.util.Date;
+
 public class RsaController {
 
     Stage currentStage;
@@ -51,14 +53,32 @@ public class RsaController {
     @FXML
     protected void onEncFindPAndQClick() {
         if (!isValidIntInput(txtEncN)) return;
-        int N = Integer.parseInt(txtEncN.getText());
+        int n = Integer.parseInt(txtEncN.getText());
+        Date date = new Date();
+
+        long startTime = date.getTime();
+        this.p = RSAHelper.getPFromN(n);
+        this.q = RSAHelper.getQFromPandN(n, p);
+
+        if (!RSAHelper.isPrime(p) || !RSAHelper.isPrime(q) ) {
+            txtEncN.setText("N IS NOT RELATIVELY PRIME");
+            return;
+        }
+
+        date = new Date();
+        long stopTime = date.getTime() - startTime;
+
+
         //TODO find P AND Q and set in global scope
-        lblEncFindPAndQ.setText("P = new P \nQ = new Q \nCalculation time = 1000ms");
+        lblEncFindPAndQ.setText("P = " + this.p + "\nQ = new "+ this.q +" \nCalculation time = "+stopTime+"ms");
     }
 
     @FXML
     protected void onEncFindNextE() {
         //TODO get next E use P and Q
+
+        int r = (p-1)*(q-1);
+
         lblEncNextE.setText("E = E \nCalculation time = 1000ms");
     }
 
